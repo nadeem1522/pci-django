@@ -115,7 +115,6 @@ def login_view(request):
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                messages.success(request, "Login successful!")
                 next_url = request.GET.get('next', 'post_list')
                 return redirect(next_url)
             else:
@@ -128,4 +127,5 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
+    messages.success(request, "Logout successful!")
     return redirect('login')  

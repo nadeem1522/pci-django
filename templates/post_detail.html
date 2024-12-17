@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}{{ post.title }} - Blog{% endblock %}
+
+{% block content %}
+    <h1>{{ post.title }}</h1>
+    <p>{{ post.content }}</p>
+    <p><small>Posted by {{ post.author }} on {{ post.published_date|date:"F d, Y" }}</small></p>
+
+    <hr>
+
+    <h3>Comments</h3>
+    {% for comment in post.comments.all %}
+        <div class="card mb-2">
+            <div class="card-body">
+                <p><strong>{{comment.author}}</strong>: {{ comment.text }}</p>
+                <p><small>Posted on {{ comment.timestamp|date:"F d, Y" }}</small></p>
+                
+                {% if comment.replies.all %}
+                    <div class="ml-3">
+                        <h5>Replies:</h5>
+                        {% for reply in comment.replies.all %}
+                            <div class="card mb-2">
+                                <div class="card-body">
+                                    <p><strong>{{ reply.author }}</strong>: {{ reply.text }}</p>
+                                    <p><small>Posted on {{ reply.timestamp|date:"F d, Y" }}</small></p>
+                                </div>
+                            </div>
+                        {% empty %}
+                            <p>No replies yet.</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="ml-3">
+            <form method="post" action="{% url 'comment_reply' comment.id %}">
+                {% csrf_token %}
+                <textarea name="text" class="form-control" placeholder="Reply to this comment"></textarea>
+                <button type="submit" class="btn btn-primary my-2">Post Reply</button>
+            </form>
+        </div>
+    {% empty %}
+        <p>No comments yet.</p>
+    {% endfor %}
+
+
+    <hr>
+
+    <h4>Leave a comment</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}  
+        <button type="submit" class="btn btn-primary my-4 float-end">Comment</button>
+    </form>
+{% endblock %}

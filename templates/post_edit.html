@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% block title %}Create Post - Blog{% endblock %}
+
+{% block content %}
+    {% if "edit" in request.get_full_path %}
+        <h2 class="py-4">Edit Post</h2>
+    {% else %}
+        <h2 class="py-4">Create a New Post</h2>
+    {% endif %}
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        {% if "edit" in request.get_full_path %}
+            <button type="submit" class="btn btn-primary my-4">Edit Post</button>
+        {% else %}
+            <button type="submit" class="btn btn-primary my-4">Create Post</button>
+        {% endif %}
+    </form>
+{% endblock %}
